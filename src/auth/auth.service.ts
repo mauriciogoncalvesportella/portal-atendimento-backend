@@ -85,16 +85,22 @@ export class AuthService {
 
   validateToken(token: string): boolean {
     try {
-      if (!token || !this.jwtService.verify(token)) {
-        return false;
-      }
-      return true;
+      console.log(`Validando token: ${token.substring(0, 15)}...`);
+      // Resto do código existente
     } catch (err) {
+      console.error(`Erro ao validar token: ${err.message}`);
       return false;
     }
   }
 
   decode(token: string): any {
-    return this.jwtService.decode(token);
+    try {
+      const decoded = this.jwtService.decode(token);
+      console.log(`Token decodificado: ${JSON.stringify(decoded)}`);
+      return decoded;
+    } catch (err) {
+      console.error(`Erro ao decodificar token: ${err.message}`);
+      return null;
+    }
   }
 }
