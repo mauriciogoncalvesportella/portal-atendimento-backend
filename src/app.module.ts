@@ -56,7 +56,7 @@ import { join } from "path";
                   rejectUnauthorized: true,
                 },
             entities: [__dirname + "/dist/../**/**.entity{.ts,.js}"],
-            synchronize: true,
+            synchronize: false,
             logging: ["error"],
             connectTimeoutMS: 5000,
             retryAttempts: 3,
