@@ -1,79 +1,64 @@
-// socket-server.js
+// Adicione esta configuração no início do seu arquivo principal do servidor API
+// (geralmente app.js, index.js, server.js ou similar)
 const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
 const cors = require("cors");
+// ... outras importações que você já tenha
 
-// Criar servidor express básico
 const app = express();
+
+// Configuração CORS para ambiente de produção
+const isProduction = process.env.NODE_ENV === "production";
+
+// Lista de origens permitidas
+const allowedOrigins = isProduction
+  ? ["https://seu-dominio-de-producao.com"] // Origens de produção
+  : ["http://localhost:8080", "https://192.168.15.109:8080"]; // Origens de desenvolvimento
+
+// Configuração CORS - deve ser uma das primeiras middlewares
 app.use(
   cors({
-    origin: "http://localhost:8080",
-    methods: ["GET", "POST"],
+    origin: function(origin, callback) {
+      // Permitir requisições sem origem (como apps mobile ou curl)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log(`Origem bloqueada pelo CORS: ${origin}`);
+        callback(new Error("Não permitido pelo CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
     credentials: true,
+    // Tempo em segundos que o navegador pode cachear a resposta do preflight
+    maxAge: 86400, // 24 horas
   })
 );
 
-// Rota de teste
-app.get("/health", (req, res) => {
-  res.send({ status: "Socket server running" });
+// Middleware de tratamento de erros para CORS
+app.use((err, req, res, next) => {
+  if (err.message === "Não permitido pelo CORS") {
+    return res.status(403).json({
+      status: "erro",
+      message: "Acesso não autorizado",
+    });
+  }
+  next(err);
 });
 
-// Criar servidor HTTP e Socket.io
-const server = http.createServer(app);
-const io = new Server(server, {
-  path: "/api/socketio",
-  cors: {
-    origin: "http://localhost:8080",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-  pingTimeout: 300000, // 5 minutos
-  pingInterval: 30000, // 30 segundos
+// Resto do seu código de servidor...
+
+// Exemplo de rotas
+app.get("/api/agenda/tipo-agendamento/all", (req, res) => {
+  // Seu código para esta rota
 });
 
-// Configurar comportamento Socket.io
-io.on("connection", (socket) => {
-  console.log(`Cliente conectado: ${socket.id}`);
-
-  // Impedir desconexões
-  const originalDisconnect = socket.disconnect;
-  socket.disconnect = function() {
-    console.log("Tentativa de desconexão bloqueada");
-    return socket;
-  };
-
-  // Handler de salas
-  socket.on("join", (room) => {
-    socket.join(room);
-    console.log(`Socket ${socket.id} entrou na sala: ${room}`);
-    socket.emit("joined", { room });
-  });
-
-  // Simular handlers de eventos que seu aplicativo precisa
-  socket.on("FilaEspera/joinFilaEsperaSocket", () => {
-    socket.join("FilaEsperaSocket");
-    console.log(`Socket ${socket.id} entrou na FilaEsperaSocket`);
-  });
-
-  socket.on("Fone/joinFoneSocket", () => {
-    socket.join("FoneSocket");
-    console.log(`Socket ${socket.id} entrou na FoneSocket`);
-  });
-
-  socket.on("AtendimentosOnline/joinAtendimentosOnlineSocket", () => {
-    socket.join("AtendimentosOnlineSocket");
-    console.log(`Socket ${socket.id} entrou na AtendimentosOnlineSocket`);
-  });
-
-  // Monitorar tentativa de desconexão
-  socket.on("disconnecting", (reason) => {
-    console.log(`Cliente ${socket.id} tentando desconectar. Motivo: ${reason}`);
-  });
-});
-
-// Iniciar servidor na porta 3001
-const PORT = 3001;
-server.listen(PORT, () => {
-  console.log(`Servidor Socket.io independente rodando na porta ${PORT}`);
+// Iniciar o servidor
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(
+    `API server running on port ${PORT} in ${process.env.NODE_ENV ||
+      "development"} mode`
+  );
 });

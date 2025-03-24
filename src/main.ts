@@ -1,17 +1,42 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
+import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
+
+    // Configuração de prefixo global para rotas
     app.setGlobalPrefix("api");
 
-    // Configuração CORS
+    // Configuração de validação global
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      })
+    );
+
+    // Configuração CORS mais abrangente
     app.enableCors({
-      origin: "http://localhost:8080",
-      methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+      origin: [
+        "http://localhost:8080",
+        "https://localhost:8080",
+        "http://127.0.0.1:8080",
+        "https://127.0.0.1:8080",
+        /^http(s)?:\/\/(.*\.)?localhost(:\d+)?$/,
+      ],
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
       credentials: true,
-      allowedHeaders: "Content-Type,Authorization,version-control,Accept",
+      allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Origin",
+        "X-Requested-With",
+        "version-control",
+      ],
     });
 
     await app.listen(process.env.PORT || 3000);
@@ -20,7 +45,7 @@ async function bootstrap() {
     );
   } catch (error) {
     console.error("Erro ao iniciar a aplicação:", error);
-    process.exit(1); // Sair com erro em vez de tentar criar segunda instância
+    process.exit(1);
   }
 }
 
