@@ -11,7 +11,8 @@ export class VersionControlMiddleware implements NestMiddleware {
     res.setHeader("Access-Control-Expose-Headers", "version-control");
     res.setHeader("version-control", process.env.VERSION);
 
-    const byPassUrl = ["3cx", "auth", "commerce", "files", "image"];
+    const byPassUrl = ["3cx", "auth", "commerce", "files", "image", "atividades"];
+
     const byPass = byPassUrl.some((url) => req.baseUrl.includes(url));
 
     if (req.headers["version-control"] === process.env.VERSION || byPass) {
