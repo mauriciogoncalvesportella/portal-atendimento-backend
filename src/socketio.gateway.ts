@@ -148,7 +148,6 @@ export class SocketioGateway
       // Substituir método disconnect original para evitar desconexões automáticas
       const originalDisconnect = client.disconnect;
       client.disconnect = function() {
-        console.log("[Socket] Tentativa de desconexão bloqueada");
         return client; // Não desconecta realmente
       };
 

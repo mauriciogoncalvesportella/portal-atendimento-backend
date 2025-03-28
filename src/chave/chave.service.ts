@@ -76,7 +76,6 @@ export class ChaveService {
   }
 
   async deleteChaveFone (cd: number) {
-    console.log(cd)
     await this.chaveFoneRepository.delete({ cd: cd })
   }
 

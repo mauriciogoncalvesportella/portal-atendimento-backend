@@ -19,7 +19,6 @@ app.use(
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       } else {
-        console.log(`Origem bloqueada pelo CORS: ${origin}`);
         return callback(new Error("Não permitido pelo CORS"));
       }
     },
@@ -55,7 +54,4 @@ app.get("/api/agenda/tipo-agendamento/all", (req, res) => {
 // Iniciar o servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(
-    `API server running on port ${PORT} in ${process.env.NODE_ENV || "development"} mode`
-  );
 });
