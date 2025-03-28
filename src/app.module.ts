@@ -15,6 +15,7 @@ import { AuthModule } from "./auth/auth.module";
 import { ChaveModule } from "./chave/chave.module";
 import { ConfigModule } from "@nestjs/config";
 import { AtendimentoModule } from "./atendimento/atendimento.module";
+import { AtividadeModule } from "./atividade/atividade.module";
 import { MonitorModule } from "./monitor/monitor.module";
 import { TableModule } from "./table/table.module";
 import { TicketModule } from "./ticket/ticket.module";
@@ -97,6 +98,7 @@ import { join } from "path";
     AuthModule,
     ChaveModule,
     AtendimentoModule,
+    AtividadeModule,
     MonitorModule,
     TableModule,
     TicketModule,
