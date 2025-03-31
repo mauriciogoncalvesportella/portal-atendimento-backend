@@ -68,9 +68,6 @@ import { join } from "path";
             "Erro na configuração do banco de dados:",
             error.message
           );
-          console.log(
-            "🔧 Continuando com modo de desenvolvimento limitado sem banco de dados 🔧"
-          );
 
           return {
             type: "postgres" as const,

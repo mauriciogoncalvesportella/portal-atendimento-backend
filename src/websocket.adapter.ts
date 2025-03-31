@@ -43,18 +43,12 @@ export class CustomWebSocketAdapter extends IoAdapter {
       server.engine
     );
     server.engine.handleConnection = function(conn, req) {
-      console.log("[WebSocketAdapter] Nova conexão interceptada:", conn.id);
       return originalHandleConnection(conn, req);
     };
 
     // Impedir desconexões automáticas
     const originalClose = server.engine.close.bind(server.engine);
     server.engine.close = function(reason) {
-      console.log(
-        "[WebSocketAdapter] Tentativa de fechamento bloqueada:",
-        reason
-      );
-      // Não chamar originalClose para evitar desconexões
     };
 
     return server;

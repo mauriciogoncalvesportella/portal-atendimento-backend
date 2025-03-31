@@ -372,7 +372,6 @@ export class TicketService {
   }
 
   async updateKanbanOrder (data: any, user: any) {
-    console.log(data)
     const ticketCdList : any = Object.keys(data)
     const qb = this.ticketRepository
       .createQueryBuilder('ticket')

@@ -25,7 +25,6 @@ const bootstrap = async () => {
         cdchave,
         fone
       })
-      console.log(`ADDED "${fone}" "${cdchave}"`)
     }
   }
 
