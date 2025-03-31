@@ -5,7 +5,7 @@ const atividadesRouter = require("./rotas/atividades"); // ajuste o caminho se n
 
 // Detecta ambiente
 const isProduction = process.env.NODE_ENV === "production";
-
+  
 // Lista de origens permitidas
 const allowedOrigins = isProduction
   ? ["https://seu-dominio-de-producao.com"]

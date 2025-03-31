@@ -36,6 +36,7 @@ async function bootstrap() {
         "Origin",
         "X-Requested-With",
         "version-control",
+        "x-client-version"
       ],
     });
 
